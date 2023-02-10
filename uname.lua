@@ -1,6 +1,9 @@
 fmt = import('fmt')
 strings = import('strings')
+opts = import('opts')
 
+-- If Honeyshell is running on a system you're trying to emulate, then you can
+-- get these values in realtime from your system, instead of hardcoding them.
 local kernel_name = 'Linux'
 local kernel_release = '5.15.84-v7+'
 local kernel_version = '#1613 SMP Thu Jan 5 11:59:48 GMT 2023'
@@ -10,36 +13,25 @@ local hardware_platform = 'unknown'
 local operating_system = 'GNU/Linux'
 
 function get_flags()
-    flags = newBoolMap()
-    flags['--help'] = false
-    flags['-a'] = false
-    flags['--all'] = false
-    flags['-s'] = false
-    flags['--kernel-name'] = false
-    flags['-n'] = false
-    flags['--nodename'] = false
-    flags['-r'] = false
-    flags['--kernel-release'] = false
-    flags['-v'] = false
-    flags['--kernel-version'] = false
-    flags['-m'] = false
-    flags['--machine'] = false
-    flags['-p'] = false
-    flags['--processor'] = false
-    flags['-i'] = false
-    flags['--hardware-platform'] = false
-    flags['-o'] = false
-    flags['--operating-system'] = false
-    flags['--version'] = false
-    flags['--help'] = false
-    flags:Test()
+    flags = opts.CreateOptsConfig()
+    flags:AddBoth('-a', '--all', false)
+    flags:AddBoth('-s', '--kernel-name', false)
+    flags:AddBoth('-n', '--nodename', false)
+    flags:AddBoth('-r', '--kernel-release', false)
+    flags:AddBoth('-v', '--kernel-version', false)
+    flags:AddBoth('-m', '--machine', false)
+    flags:AddBoth('-p', '--processor', false)
+    flags:AddBoth('-i', '--hardware-platform', false)
+    flags:AddBoth('-o', '--operating-system', false)
+    flags:AddOne('--help', false)
+    flags:AddOne('--version', false)
 
     return flags
 end
 
 function uname_command(args, session)
     flags = get_flags()
-    opts, raw, err = args:ParseOpts(flags)
+    _, raw, err = args:ParseOpts(flags)
 
     if err ~= nil then
         session:TermWrite(err:String())
@@ -54,7 +46,7 @@ function uname_command(args, session)
         hostname = strings.Trim(h.Contents, '\n')
     end
 
-    if opts['a'] or opts['all'] then
+    if flags:Get('a') or flags:Get('all') then
         out = fmt.Sprintf(
             '%s %s %s %s %s %s\n',
             kernel_name,
@@ -64,28 +56,27 @@ function uname_command(args, session)
             machine,
             operating_system
         )
-    elseif opts['n'] or opts['nodename'] then
+    elseif flags:Get('n') or flags:Get('nodename') then
         out = hostname .. '\n'
-    elseif opts['r'] or opts['kernel-release'] then
+    elseif flags:Get('r') or flags:Get('kernel-release') then
         out = kernel_release .. '\n'
-    elseif opts['v'] or opts['kernel-version'] then
+    elseif flags:Get('v') or flags:Get('kernel-version') then
         out = kernel_version .. '\n'
-    elseif opts['m'] or opts['machine'] then
+    elseif flags:Get('m') or flags:Get('machine') then
         out = machine .. '\n'
-    elseif opts['p'] or opts['processor'] then
+    elseif flags:Get('p') or flags:Get('processor') then
         out = processor .. '\n'
-    elseif opts['i'] or opts['hardware-platform'] then
+    elseif flags:Get('i') or flags:Get('hardware-platform') then
         out = hardware_platform .. '\n'
-    elseif opts['o'] or opts['operating-system'] then
+    elseif flags:Get('o') or flags:Get('operating-system') then
         out = operating_system .. '\n'
-    elseif opts['version'] then
+    elseif flags:Get('version') then
         out =  'version\n'
-    elseif opts['help'] then
+    elseif flags:Get('help') then
         out = 'help\n'
     else
         out = kernel_name .. '\n'
     end
 
     session:TermWrite(out)
-    fmt.Println(opts, err)
 end
