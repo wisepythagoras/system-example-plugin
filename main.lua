@@ -2,6 +2,8 @@ fmt = import('fmt')
 os = import('os')
 strings = import('strings')
 
+require('uname')
+
 function prompt(session)
     e = '$'
     pwd = session:GetPWD()
@@ -45,4 +47,5 @@ function install(config)
     fmt.Println('\27[31;1;4mEmulating Raspberry OS\27[0m')
     config:RegisterPrompt(prompt)
     config:RegisterLoginMessage(login_msg)
+    config:RegisterCommand('uname', '/bin', uname_command)
 end
