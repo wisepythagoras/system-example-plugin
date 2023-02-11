@@ -75,6 +75,27 @@ function uname_command(args, session)
     elseif flags:Get('help') then
         out = 'help\n'
     else
+        if len(raw) > 0 then
+            arg = raw[1]
+            out = 'uname: '
+
+            if strings.HasPrefix(arg, '-') then
+                if strings.HasPrefix(arg, '--') then
+                    out = fmt.Sprintf(out .. 'unrecognized option \'%s\'\n', arg)
+                else
+                    arg = strings.ReplaceAll(arg, '-', '')
+                    out = fmt.Sprintf(out .. 'invalid option -- \'%s\'\n', arg)
+                end
+            else
+                out = fmt.Sprintf(out .. 'extra operand -- \'%s\'\n', arg)
+            end
+
+            out = out .. 'Try \'uname --help\' for more information.\n'
+            session:TermWrite(out)
+
+            return
+        end
+
         out = kernel_name .. '\n'
     end
 
