@@ -71,7 +71,14 @@ function uname_command(args, session)
     elseif flags:Get('o') or flags:Get('operating-system') then
         out = operating_system .. '\n'
     elseif flags:Get('version') then
-        out =  'version\n'
+        -- This is just for emulation/simulation purposes and this software does not claim any rights
+        -- to the underliying coreutils software.
+        out =  'uname (GNU coreutils) 8.32\n'
+        out = out .. 'Copyright (C) 2020 Free Software Foundation, Inc.\n'
+        out = out .. 'License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>.\n'
+        out = out .. 'This is free software: you are free to change and redistribute it.\n'
+        out = out .. 'There is NO WARRANTY, to the extent permitted by law.\n\n'
+        out = out .. 'Written by Devid McKenzie.\n' -- This name was purposely altered.
     elseif flags:Get('help') then
         -- This is just for emulation/simulation purposes and this software does not claim any rights
         -- to the underliying coreutils software.
