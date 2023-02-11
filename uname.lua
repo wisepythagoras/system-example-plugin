@@ -73,7 +73,25 @@ function uname_command(args, session)
     elseif flags:Get('version') then
         out =  'version\n'
     elseif flags:Get('help') then
-        out = 'help\n'
+        -- This is just for emulation/simulation purposes and this software does not claim any rights
+        -- to the underliying coreutils software.
+        out = 'Usage: uname [OPTION]...\n'
+        out = out .. 'Print certain system information.  With no OPTION, same as -s.\n\n'
+        out = out .. '  -a, --all                print all information, in the following order,\n'
+        out = out .. '                             except omit -p and -i if unknown:\n'
+        out = out .. '  -s, --kernel-name        print the kernel name\n'
+        out = out .. '  -n, --nodename           print the network node hostname\n'
+        out = out .. '  -r, --kernel-release     print the kernel release\n'
+        out = out .. '  -v, --kernel-version     print the kernel version\n'
+        out = out .. '  -m, --machine            print the machine hardware name\n'
+        out = out .. '  -p, --processor          print the processor type (non-portable)\n'
+        out = out .. '  -i, --hardware-platform  print the hardware platform (non-portable)\n'
+        out = out .. '  -o, --operating-system   print the operating system\n'
+        out = out .. '      --help     display this help and exit\n'
+        out = out .. '      --version  output version information and exit\n\n'
+        out = out .. 'GNU coreutils online help: <https://www.gnu.org/software/coreutils/>\n'
+        out = out .. 'Full documentation <https://www.gnu.org/software/coreutils/uname>\n'
+        out = out .. 'or available locally via: info \'(coreutils) uname invocation\'\n'
     else
         if len(raw) > 0 then
             arg = raw[1]
