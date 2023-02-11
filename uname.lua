@@ -31,7 +31,7 @@ end
 
 function uname_command(args, session)
     flags = get_flags()
-    _, raw, err = args:ParseOpts(flags)
+    _, raw, err = args:ParseOpts(flags, false)
 
     if err ~= nil then
         session:TermWrite(err:String())
@@ -120,7 +120,6 @@ function uname_command(args, session)
 
             return
         end
-
         out = kernel_name .. '\n'
     end
 
